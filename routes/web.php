@@ -20,6 +20,10 @@ use App\Http\Controllers\Admin\ArticleCommentController;
 |
 */
 Route::prefix("admin")->middleware("auth")->group(function () {
+    Route::group(['prefix' => 'filemanager'], function () {
+        \UniSharp\LaravelFilemanager\Lfm::routes();
+    });
+
     Route::get('/', function () {
         return view('admin.index');
     })->name('admin.index')
