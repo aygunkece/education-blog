@@ -152,10 +152,18 @@
                                                data-id="{{ $comment->id   }}">Cevap Ver</a>
                                         </div>
                                         <div class="d-flex  align-items-center">
-                                            <a href="javascript:void(0)" class="like-comment"><span
-                                                    class="material-icons">thumb_up</span></a>
-                                            <a href="javascript:void(0)" class="like-comment"><span
-                                                    class="material-icons-outlined">thumb_up_off_alt</span></a> 12
+                                            @php
+                                                $commentLike = $comment->commentLikes->where('user_id', auth()->id())->where("comment_id", $comment->id)->first();
+                                            @endphp
+                                            <a href="javascript:void(0)"
+                                               class="like-comment"
+                                               data-id="{{ $comment->id }}"
+                                               @if(!is_null($commentLike))
+                                               style="color:red"
+                                                @endif
+                                            >
+                                                <span class="material-icons">thumb_up</span></a>
+                                            <span id="commentLikeCount-{{ $comment->id }}">{{ $comment->like_count }}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -213,8 +221,7 @@
                                                         >
                                                             <span class="material-icons">thumb_up</span>
                                                         </a>
-                                                        <span
-                                                            id="commentLikeCount-{{ $child->id }}">{{ $child->like_count }}</span>
+                                                        <span id="commentLikeCount-{{ $child->id }}">{{ $child->like_count }}</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -238,10 +245,10 @@
     <script>
         $('#favoriteArticle').click(function () {
             @if(Auth::check())
-                let articleID = $(this).data('id');
-                let self = $(this);
+            let articleID = $(this).data('id');
+            let self = $(this);
 
-                 $.ajax({
+            $.ajax({
                 method: "POST",
                 url: "{{ route('article.favorite') }}",
                 data: {
@@ -249,13 +256,10 @@
                 },
                 async: false,
                 success: function (data) {
-                    if (data.process)
-                    {
-                        self.css("color","red")
-                    }
-                    else
-                    {
-                        self.css("color","inherit")
+                    if (data.process) {
+                        self.css("color", "red")
+                    } else {
+                        self.css("color", "inherit")
                     }
                     $("#favoriteCount").text(data.like_count);
 
@@ -266,12 +270,47 @@
                 }
             })
             @else
-                Swal.fire({
-                    title: "Bilgi",
-                    text: "Kullanıcı girişi yapmadan favorilerinize ekleyemezsiniz.",
-                    confirmButtonText: 'Tamam',
-                    icon: "info"
-                });
+            Swal.fire({
+                title: "Bilgi",
+                text: "Kullanıcı girişi yapmadan favorilerinize ekleyemezsiniz.",
+                confirmButtonText: 'Tamam',
+                icon: "info"
+            });
+            @endif
+        });
+        $('.like-comment').click(function () {
+            @if(Auth::check())
+            let articleID = $(this).data('id');
+            let self = $(this);
+
+            $.ajax({
+                method: "POST",
+                url: "{{ route('article.comment.favorite') }}",
+                data: {
+                    id: articleID
+                },
+                async: false,
+                success: function (data) {
+                    if (data.process) {
+                        self.css("color", "red")
+                    } else {
+                        self.css("color", "inherit")
+                    }
+                    $("#commentLikeCount-" + articleID).text(data.like_count);
+
+
+                },
+                error: function () {
+                    console.log("hata $article->format_publish_date");
+                }
+            })
+            @else
+            Swal.fire({
+                title: "Bilgi",
+                text: "Kullanıcı girişi yapmadan yorumu beğenemezsiniz..",
+                confirmButtonText: 'Tamam',
+                icon: "info"
+            });
             @endif
         });
     </script>
