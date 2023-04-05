@@ -5,6 +5,7 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Yazılım Eğitim Blog</title>
 
     <link rel="stylesheet" href="{{ asset("assets/front/css/bootstrap.min.css") }}">
@@ -14,14 +15,15 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap"
         rel="stylesheet">
-    <link href="assets/front/material-icons/iconfont/material-icons.css" rel="stylesheet">
+    <link href="{{ asset("assets/front/material-icons/iconfont/material-icons.css") }}" rel="stylesheet">
     <link href="{{ asset("assets/front/material-icons/iconfont/material-icons.css") }}" rel="stylesheet">
 
     <link rel="stylesheet" href="{{ asset("assets/front/swiper/swiper-bundle.min.css") }}">
 
     <link rel="stylesheet" href="{{ asset("assets/front/aos/aos.css") }}">
-
+    <link rel="stylesheet" href="{{ asset("assets/front/css/highlighter-default.min.css") }}">
     <link rel="stylesheet" href="{{ asset("assets/front/css/style.css") }}">
+
     @yield("css")
 
 </head>
@@ -101,18 +103,14 @@
                 <section class="categories bg-white shadow-sm">
                     <h4 class="bg-light text-secondary p-3 border-bottom border-1 border-light m-0">Kategoriler</h4>
                     <ul class="list-group m-0">
-                        <li class="px-3 py-3"><a href="">Html <span class="text-warning float-end me-3">&#x25CF;</span></a>
-                        </li>
-                        <li class="px-3 py-3"><a href="">Html <span class="text-primary float-end me-3">&#x25CF;</span></a>
-                        </li>
-                        <li class="px-3 py-3"><a href="">Html <span
-                                    class="text-danger float-end me-3">&#x25CF;</span></a></li>
-                        <li class="px-3 py-3"><a href="">Html <span
-                                    class="text-danger float-end me-3">&#x25CF;</span></a></li>
-                        <li class="px-3 py-3"><a href="">Html <span
-                                    class="text-danger float-end me-3">&#x25CF;</span></a></li>
-                        <li class="px-3 py-3"><a href="">Html <span
-                                    class="text-danger float-end me-3">&#x25CF;</span></a></li>
+                        @foreach($categories as $category)
+                            <li class="px-3 py-3">
+                                <a href="{{ route('front.category',['category'=>$category->slug]) }}">{{ $category->name }}
+                                    <span class="float-end me-3" style="color: {{ $category->color }}">&#x25CF;</span>
+                                </a>
+                            </li>
+                        @endforeach
+
                     </ul>
                 </section>
                 @if(isset($settings) && $settings->video_is_active)
@@ -223,8 +221,20 @@
 <script src="{{ asset("assets/front/swiper/swiper-bundle.min.js") }}"></script>
 <script src="{{ asset("assets/front/aos/aos.js") }}"></script>
 
+<script src="{{ asset("assets/front/js/highlight.min.js") }}"></script>
+
 
 <script src="{{ asset("assets/front/js/main.js") }}"></script>
+<script>
+    $(document).ready(function () {
+        $.ajaxSetup({
+            headers: {
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
+            }
+        })
+    })
+</script>
+@include('sweetalert::alert')
 @yield("js")
 
 </body>

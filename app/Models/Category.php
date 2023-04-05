@@ -76,6 +76,14 @@ class Category extends Model
         return $this->hasMany(Article::class, "id", "category_id");
     }
 
+    public function articlesActive()
+    {
+        return $this->hasMany(Article::class, "category_id", "id")
+            ->where("status",1)
+            ->whereNotNull("publish_date")
+            ->where("publish_date","<=", now());
+    }
+
     public function user():HasOne
     {
         return $this->hasOne(User::class,"id","user_id");

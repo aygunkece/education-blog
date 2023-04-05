@@ -222,7 +222,7 @@
                                 });
                             },
                             error: function (){
-                                console.log("hata geldi");
+                                console.log("hata $article->format_publish_date");
                             }
                         })
                     }
@@ -272,7 +272,7 @@
                                 });
                             },
                             error: function (){
-                                console.log("hata geldi");
+                                console.log("hata $article->format_publish_date");
                             }
                         })
 

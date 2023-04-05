@@ -17,7 +17,10 @@
             <li class="active-page">
                 <a href="{{ route('home') }}" class="{{ Route::is("home") ? "active" : "" }}"><i class="material-icons-two-tone">dashboard</i>Dashboard</a>
             </li>
-            <li class="{{Route::is("article.index") || Route::is("article.create") ? "active open" : "" }}">
+            <li class="{{Route::is("article.index") ||
+                         Route::is("article.create") ||
+                         Route::is("article.comment.list") ||
+                          Route::is("article.pending-approval") ? "active open" : "" }}">
                 <a href="#">
                     <i class="material-icons">tune</i>
                     Makale Yönetimi
@@ -28,6 +31,12 @@
                     </li>
                     <li>
                         <a href="{{ route("article.index") }}" class="{{ Route::is("article.index") ? "active" : "" }}">Makale Listele</a>
+                    </li>
+                    <li>
+                        <a href="{{ route("article.comment.list") }}" class="{{ Route::is("article.comment.list") ? "active" : "" }}">Yorum Listesi</a>
+                    </li>
+                    <li>
+                        <a href="{{ route("article.pending-approval") }}" class="{{ Route::is("article.pending-approval") ? "active" : "" }}">Onay Bekleyen Yorumlar</a>
                     </li>
 
                 </ul>
