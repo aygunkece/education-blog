@@ -16,13 +16,13 @@
         href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap"
         rel="stylesheet">
     <link href="{{ asset("assets/front/material-icons/iconfont/material-icons.css") }}" rel="stylesheet">
-    <link href="{{ asset("assets/front/material-icons/iconfont/material-icons.css") }}" rel="stylesheet">
 
     <link rel="stylesheet" href="{{ asset("assets/front/swiper/swiper-bundle.min.css") }}">
 
     <link rel="stylesheet" href="{{ asset("assets/front/aos/aos.css") }}">
     <link rel="stylesheet" href="{{ asset("assets/front/css/highlighter-default.min.css") }}">
     <link rel="stylesheet" href="{{ asset("assets/front/css/style.css") }}">
+    <link rel="stylesheet" href="{{ asset("assets/front/font-awesome/css/font-awesome.min.css") }}">
 
     @yield("css")
 
@@ -81,11 +81,25 @@
                                 </li>
                                 <li><a class="dropdown-item" href="#">Something else here</a></li>
                             </ul>
-                        </li>
                         <li class="nav-item">
                             <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
                         </li>
                     </ul>
+                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link d-flex text-orange" href="#">
+                               <span class="material-icons-outlined align-items-center me-1">app_registration</span>
+                                Kayıt Ol
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link d-flex text-orange" href="#">
+                                <span class="material-icons-outlined align-items-center me-1">how_to_reg</span>
+                                Giriş
+                            </a>
+                        </li>
+                    </ul>
+
                 </div>
             </nav>
         </div>
@@ -225,6 +239,7 @@
 
 
 <script src="{{ asset("assets/front/js/main.js") }}"></script>
+
 <script>
     $(document).ready(function () {
         $.ajaxSetup({

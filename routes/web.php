@@ -78,6 +78,8 @@ Route::prefix("admin")->middleware("auth")->group(function () {
 
 
 });
+Route::get('admin/login', [LoginController::class, 'showLogin'])->name('login');
+Route::post('admin/login', [LoginController::class, 'login']);
 
 Route::group(['prefix' => 'laravel-filemanager', 'middleware' => ['web', 'auth']], function () {
     \UniSharp\LaravelFilemanager\Lfm::routes();
@@ -94,13 +96,27 @@ Route::post("/{article:id}/makale-yorum", [FrontController::class, "articleComme
 Route::get("/arama", [FrontController::class, "search"])->name("front.search");
 
 
-Route::get('/login', [LoginController::class, 'showLogin'])->name('login');
-Route::post('/login', [LoginController::class, 'login']);
 
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
+
+
 Route::get('/register', [LoginController::class, 'showRegister'])->name('register');
 Route::post('/register', [LoginController::class, 'register']);
+
+Route::get("/login", [LoginController::class, "showLoginUser"])->name("user.login");
+Route::post("/login", [LoginController::class, "loginUser"]);
+
+Route::post("/iletisim", [LoginController::class, ""])->name("contact");
+
+Route::get("/parola-sifirla", [LoginController::class, "showPasswordReset"])->name("passwordReset");
+Route::post("/parola-sifirla", [LoginController::class, "sendPasswordReset"]);
+Route::get("/parola-sifirla/{token}", [LoginController::class, "showPasswordResetConfirm"])->name("passwordResetToken");
+Route::post("/parola-sifirla/{token}", [LoginController::class, "passwordReset"]);
+
+Route::get("/auth/verify/{token}", [LoginController::class, "verify"])->name("verify-token");
+Route::get("/auth/{driver}/callback", [LoginController::class, "socialVerify"])->name("x");
+Route::get("/auth/{driver}", [LoginController::class, "socialLogin"])->name("socialLogin");
 
 
 

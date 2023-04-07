@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\Category;
+use App\Models\Settings;
 use Carbon\Carbon;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\View;
@@ -28,12 +29,12 @@ class AppServiceProvider extends ServiceProvider
 
         Carbon::setLocale(config("app.locale"));
 
-       /* View::composer(['front.*', 'mail::header'], function($view){
+        View::composer('front.*', function($view){
 //            dd($view);
-            $settings = Setting::first();
+            $settings = Settings::first();
             $categories = Category::query()->where("status", 1)->get();
             $view->with("settings", $settings)->with("categories", $categories);
-        });*/
+        });
 
     }
 }
