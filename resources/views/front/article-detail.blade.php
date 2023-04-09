@@ -9,7 +9,25 @@
                 <div class="article-header font-lato d-flex justify-content-between pb-4">
                     <div class="article-header-date">
 
-                        <time datetime="{{ $article->format_publish_date }} "> {{ $article->format_publish_date }}
+                        @if($article)
+                            <time datetime="{{ $article->format_publish_date }} "> {{ $article->format_publish_date }}
+                                @php
+                                    $tags = $article->getAttribute("tagsToArray");
+                                @endphp
+                                @if(!is_null($tags) && count($tags))
+                                    @foreach($article->getAttribute("tagsToArray") as $tag)
+                                        @php
+                                            $class = ["text-danger", "text-warning", "text-primary", "text-success"];
+                                            $randomClass = $class[random_int(0,3)];
+                                        @endphp
+                                        <a href="{{ route('front.search', ['q' => $tag]) }}">
+                                            <span class="{{ $randomClass }}">{{ $tag }}</span>
+                                        </a>
+                            @endforeach
+                        @endif
+                        @endif
+
+                       {{-- <time datetime="{{ $article->format_publish_date }} "> {{ $article->format_publish_date }}
                             @php
                                 $tags = $article->getAttribute("tagsToArray");
                             @endphp
@@ -23,7 +41,7 @@
                                         <span class="{{ $randomClass }}">{{ $tag }}</span>
                                     </a>
                         @endforeach
-                        @endif
+                        @endif--}}
                     </div>
                     <div class="article-header-author">
                         Yazar: <a href="#"><strong>{{ $article->user->name}}</strong></a>

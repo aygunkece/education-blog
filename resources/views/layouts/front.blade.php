@@ -80,25 +80,51 @@
                                     <hr class="dropdown-divider">
                                 </li>
                                 <li><a class="dropdown-item" href="#">Something else here</a></li>
-                            </ul>
+
                         <li class="nav-item">
                             <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
                         </li>
                     </ul>
-                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                        <li class="nav-item">
-                            <a class="nav-link d-flex text-orange" href="#">
-                               <span class="material-icons-outlined align-items-center me-1">app_registration</span>
-                                Kayıt Ol
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link d-flex text-orange" href="#">
-                                <span class="material-icons-outlined align-items-center me-1">how_to_reg</span>
-                                Giriş
-                            </a>
-                        </li>
                     </ul>
+                    @auth
+                        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                            <li class="nav-item">
+                                <a class="nav-link d-flex text-orange" href="#">
+                                    <i class="fa fa-user me-1 d-flex align-items-center"></i>
+                                   {{ auth()->user()->username }}
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link d-flex text-orange" href="javascript:void(0)"
+                                   onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                    <i class="fa fa-close me-1 d-flex align-items-center"></i>
+                                    Çıkış Yap
+                                </a>
+                                <form action="{{ route("logout") }}" method="POST" id="logout-form">
+                                    @csrf
+                                </form>
+                            </li>
+                        </ul>
+                    @else
+                        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                            <li class="nav-item">
+                                <a class="nav-link d-flex text-orange" href="{{ route('register') }}">
+                                    <span class="material-icons-outlined align-items-center me-1">app_registration</span>
+                                    Kayıt Ol
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link d-flex text-orange" href="{{ route("user.login") }}">
+                                    <span class="material-icons-outlined align-items-center me-1">how_to_reg</span>
+                                    Giriş
+                                </a>
+                            </li>
+                        </ul>
+                    @endauth
+                    {{--@guest
+                    @else
+                    @endguest--}}
+
 
                 </div>
             </nav>

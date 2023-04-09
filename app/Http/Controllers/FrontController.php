@@ -60,7 +60,7 @@ class FrontController extends Controller
         $categories = Category::query()->where("status", 1)->get();
 
         $article = Article::query()->with([
-           // "user",
+            //"user",
             "user.articleLike",
             "comments" => function ($query) {
                 $query->where("status", 1)
@@ -76,16 +76,34 @@ class FrontController extends Controller
         ])
             ->where("slug", $articleSlug)
             ->first();
-        $userLike = $article
-            ->articleLikes
-            ->where("article_id",$article->id)
-            ->where("user_id",\auth()->id())
-            ->first();
+
+        if ($article) {
+            $userLike = $article
+                ->articleLikes
+                ->where("article_id",$article->id)
+                ->where("user_id",\auth()->id())
+                ->first();
+
+            $article->increment("view_count");
+            $article->save();
+        } else {
+            $userLike = null;
+        }
+
+        return view("front.article-detail", compact("article", "categories", "settings", "userLike"));
+
+            /*$userLike = $article
+                ->articleLikes
+                ->where("article_id",$article->id)
+                ->where("user_id",\auth()->id())
+                ->first();
+
+
 
         $article->increment("view_count");
         $article->save();
 
-        return view("front.article-detail", compact("article", "categories", "settings", "userLike"));
+        return view("front.article-detail", compact("article", "categories", "settings", "userLike"));*/
 
     }
 

@@ -102,7 +102,7 @@ Route::get('/register', [LoginController::class, 'showRegister'])->name('registe
 Route::post('/register', [LoginController::class, 'register']);
 
 Route::get("/login", [LoginController::class, "showLoginUser"])->name("user.login");
-Route::post("/login", [LoginController::class, "loginUser"]);
+Route::post("/login", [LoginController::class, "login"]);
 
 Route::post("/iletisim", [LoginController::class, ""])->name("contact");
 
@@ -112,12 +112,8 @@ Route::get("/parola-sifirla/{token}", [LoginController::class, "showPasswordRese
 Route::post("/parola-sifirla/{token}", [LoginController::class, "passwordReset"]);
 
 Route::get("/auth/verify/{token}", [LoginController::class, "verify"])->name("verify-token");
-
-
-
-
-/*Route::get("/auth/{driver}/callback", [LoginController::class, "socialVerify"])->name("x");
-Route::get("/auth/{driver}", [LoginController::class, "socialLogin"])->name("socialLogin");*/
+Route::get("/auth/{driver}/callback", [LoginController::class, "socialVerify"])->name("x");
+Route::get("/auth/{driver}", [LoginController::class, "socialLogin"])->name("socialLogin");
 
 
 
