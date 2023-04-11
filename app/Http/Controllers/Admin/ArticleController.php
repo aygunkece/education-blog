@@ -27,7 +27,9 @@ class ArticleController extends Controller
         $categories = Category::all();
 
         $list = Article::query()
-            ->with(["category", "user"])
+            ->with(["category", "user"=>function($query){
+                $query->withTrashed();
+            }])
             ->where(function ($query) use ($request) {
                 $query->orWhere("title", "LIKE", "%" . $request->search_text . "%")
                     ->orWhere("slug", "LIKE", "%" . $request->search_text . "%")

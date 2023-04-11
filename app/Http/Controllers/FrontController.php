@@ -21,32 +21,46 @@ class FrontController extends Controller
 
     public function home()
     {
-        $settings = Settings::first();
-        $categories = Category::query()->where("status", 1)->get();
+        $mostPopularArticles = Article::query()
+            ->with("user","category")
+            ->whereHas("user")
+            ->whereHas("category")
+            ->orderBy("view_count","DESC")
+            ->limit(6)
+            ->get();
 
-
-        return view("front.index", compact("settings", "categories"));
+        $lastPublishedArticles = Article::query()
+            ->with("user","category")
+            ->whereHas("user")
+            ->whereHas("category")
+            ->orderBy("publish_date","DESC")
+            ->limit(6)
+            ->get();
+        return view("front.index", compact("mostPopularArticles","lastPublishedArticles"));
     }
 
     public function category(Request $request, string $slug)
     {
-        $settings = Settings::first();
+       /* $settings = Settings::first();
         $categories = Category::query()->where("status", 1)->get();
 
 
         $category = Category::query()->with("articlesActive")->where("slug", $slug)->first();
-        $articles = $category->articlesActive()->paginate(2);
+        $articles = $category->articlesActive()->paginate(2);*/
         //$articles = $category->articlesActive()->with(['user','category'])->paginate(2); // with ile birlikte eaching loading yapar. User ve category bilgilerini alır. Sistemi daha az yorar.
 
         // $articles->load(['user','category']); //kullanılmadığı durumda veritabanından çekmemek için kullanıyoruz. with ile arasındaki fark loadı daha sonrasında kullanıyoruz.
 
         $articles = Article::query()
-            ->with(['category:id,name', 'user:id,name,username'])
+            ->with(['category:id,name,slug', 'user:id,name,username'])
             ->whereHas("category", function ($query) use ($slug) {
                 $query->where("slug", $slug);
-            })->paginate(3);
+            })
+            ->whereHas("user")
+            ->paginate(21);
 
-        return view("front.article-list", compact("categories", "category", 'settings', 'articles'));
+        $title = Category::query()->where("slug",$slug)->first()->name . " Kategorisine Ait Makaleler";
+        return view("front.article-list", compact('articles', 'title'));
 
         /*  $title = Category::query()->where("slug", $slug)->first()->name . " Kategorisine Ait Makaleler";
 
@@ -56,20 +70,53 @@ class FrontController extends Controller
 
     public function articleDetail(Request $request, string $username, string $articleSlug)
     {
-        $settings = Settings::first();
-        $categories = Category::query()->where("status", 1)->get();
 
-        $article = Article::query()->with([
-            //"user",
+        $article = session()->get("last_article");
+        $visitedArticles = session()->get("visited_articles");
+        $visitedArticlesCategoryIds = [];
+        $visitedArticlesAuthorIds = [];
+        $visitedInfo = Article::query()
+            ->select("user_id","category_id")
+            ->whereIn("id",$visitedArticles)
+            ->get()
+            ->each(function ($row) use (&$visitedArticlesCategoryIds,&$visitedArticlesAuthorIds) {
+                $visitedArticlesCategoryIds[]= $row->category_id;
+                $visitedArticlesAuthorIds[]= $row->user_id;
+            });
+            //dd($visitedArticlesCategoryIds,$visitedArticlesAuthorIds);
+
+        $suggestArticles = Article::query()
+            ->with(['user', 'category'])
+            ->where(function ($query) use ($visitedArticlesCategoryIds, $visitedArticlesAuthorIds){
+                $query->whereIn("category_id",$visitedArticlesCategoryIds)
+                    ->orWhereIn("user_id",$visitedArticlesAuthorIds);
+            })
+            ->whereNotIn("id", $visitedArticles)
+            ->limit(6)
+            ->get();
+
+        $userLike = $article
+            ->articleLikes
+            ->where("article_id", $article->id)
+            ->where("user_id", \auth()->id())
+            ->first();
+        $article->increment("view_count");
+        $article->save();
+
+        return view("front.article-detail",
+            compact("article","userLike","suggestArticles"));
+
+        /*$article = Article::query()->with([
+            "user",
             "user.articleLike",
-            "comments" => function ($query) {
+            "comments"=> function($query){
                 $query->where("status", 1)
                     ->whereNull("parent_id");
             },
             "comments.commentLikes",
             "comments.user",
-            "comments.children" => function ($query) {
-                $query->where("status", 1);
+            "comments.children"=> function($query){
+                $query->where("status",1);
             },
             "comments.children.user",
             "comments.children.commentLikes"
@@ -77,35 +124,34 @@ class FrontController extends Controller
             ->where("slug", $articleSlug)
             ->first();
 
-        if ($article) {
-            $userLike = $article
-                ->articleLikes
-                ->where("article_id",$article->id)
-                ->where("user_id",\auth()->id())
-                ->first();
 
-            $article->increment("view_count");
-            $article->save();
-        } else {
-            $userLike = null;
-        }
+      $visitedArticlesCategoryIds = Article::query()
+          ->whereIn("id",$visitedArticles)
+          ->pluck("category_id");
 
-        return view("front.article-detail", compact("article", "categories", "settings", "userLike"));
-
-            /*$userLike = $article
-                ->articleLikes
-                ->where("article_id",$article->id)
-                ->where("user_id",\auth()->id())
-                ->first();
+        $suggestArticles = Article::query()
+            ->with(['user', 'category'])
+            ->whereIn("category_id",$visitedArticlesCategoryIds)
+            ->whereNotIn("id", $visitedArticles)
+            ->limit(6)
+            ->get();
 
 
-
+        $userLike = $article
+            ->articleLikes
+            ->where("article_id", $article->id)
+            ->where("user_id", \auth()->id())
+            ->first();
         $article->increment("view_count");
         $article->save();
 
-        return view("front.article-detail", compact("article", "categories", "settings", "userLike"));*/
+        return view("front.article-detail",
+            compact("article",  "userLike","suggestArticles"));*/
+
+
 
     }
+
 
     public function articleComment(Request $request, Article $article)
     {

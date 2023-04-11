@@ -27,12 +27,17 @@ class Article extends Model
 
     public function getFormatPublishDateAttribute():string
     {
-
         if (!is_null($this->attributes["publish_date"]))
             return Carbon::parse($this->attributes['publish_date'])->format("d-m-Y H:i");
         return "";
     }
 
+    public function getFormatCreatedAtAttribute():string
+    {
+        if(!is_null($this->attributes["created_at"]))
+            return Carbon::parse($this->attributes['created_at'])->format("d-m-Y");
+        return "";
+    }
     public function category():HasOne
     {
         return $this->hasOne(Category::class, "id", "category_id");

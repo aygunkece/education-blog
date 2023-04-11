@@ -33,8 +33,11 @@
     <div class="container">
         <div class="header-top d-flex justify-content-between align-items-center header-border header-h">
             <div class="header-logo">
-                <img src="{{ isset($settings) ? asset($settings->logo) :  asset("assets/front/image/logo.png") }}"
-                     class="logo-h img-fluid">
+                <a href="{{ route("home") }}">
+                    <img src="{{ isset($settings) ? asset($settings->logo) :  asset("assets/front/image/logo.png") }}"
+                         class="logo-h img-fluid">
+                </a>
+
             </div>
             <div class="header-text d-none d-md-block">
                 @isset($settings)
@@ -46,9 +49,9 @@
             </div>
             <div class="header-search align-items-center">
                 <span class="material-icons" id="searchIcon1">search</span>
-                <form action="" class="position-relative" style="display: none" id="searchForm">
-                    <input type="text" name="search_text" id="search_text" placeholder="Search">
-                    <span class="material-icons position-absolute" id="searchIcon2"
+                <form action="{{ route('front.search') }}" class="position-relative" style="display: none" id="searchForm">
+                    <input type="text" name="q" id="search_text" placeholder="Ara...">
+                    <span class="material-icons position-absolute" onclick="$('#searchForm').submit()" id="searchIcon2"
                           style="right: 0; top: 0; bottom: 0;">search</span>
                 </form>
             </div>
@@ -63,28 +66,11 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="#">Home</a>
+                            <a class="nav-link {{ Route::is('home') ? "active" : "" }}" aria-current="page" href="{{ route('home') }}">Anasayfa</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Link</a>
+                            <a class="nav-link {{ Route::is("front.articleList") ? "active" : "" }}" href="{{ route('front.articleList') }}">Makaleler</a>
                         </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                               data-bs-toggle="dropdown" aria-expanded="false">
-                                Dropdown
-                            </a>
-                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <li><a class="dropdown-item" href="#">Action</a></li>
-                                <li><a class="dropdown-item" href="#">Another action</a></li>
-                                <li>
-                                    <hr class="dropdown-divider">
-                                </li>
-                                <li><a class="dropdown-item" href="#">Something else here</a></li>
-
-                        <li class="nav-item">
-                            <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-                        </li>
-                    </ul>
                     </ul>
                     @auth
                         <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
@@ -145,7 +131,7 @@
                     <ul class="list-group m-0">
                         @foreach($categories as $category)
                             <li class="px-3 py-3">
-                                <a href="{{ route('front.category',['category'=>$category->slug]) }}">{{ $category->name }}
+                                <a href="{{ route('front.categoryArticles',['category'=>$category->slug]) }}">{{ $category->name }}
                                     <span class="float-end me-3" style="color: {{ $category->color }}">&#x25CF;</span>
                                 </a>
                             </li>

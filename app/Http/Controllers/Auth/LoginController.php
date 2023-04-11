@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Laravel\Socialite\Facades\Socialite;
-use Psy\Util\Str;
+use \Illuminate\Support\Str;
 
 
 class LoginController extends Controller
@@ -155,7 +155,7 @@ class LoginController extends Controller
         if ($userCheck)
         {
             Auth::login($userCheck);
-            $this->log("verify user", \auth()->id, \auth()->user()->toArray(), User::class);
+           $this->log("verify user", \auth()->id, \auth()->user()->toArray(), User::class);
 
             return redirect()->route("home");
         }
@@ -165,7 +165,7 @@ class LoginController extends Controller
             'name' => $user->getName(),
             'email' => $user->getEmail(),
             "password" => bcrypt(""),
-            "username" => is_null($this->checkUsername($username)) ?  $username : $username . uniqid(),
+            "username" => is_null($this->checkUsername($username)) ? $username : $username . uniqid(),
             "status" => 1,
             "email_verified_at" => now(),
             $driver. "_id" => $user->getId()

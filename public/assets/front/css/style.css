@@ -99,7 +99,7 @@ body{
     color: #3a0202;
     text-decoration: none;
 }
-.most-popular-author a:hover{
+.most-popular-author a:hover,.article-header-author a:hover{
     color: #ee8606;
 }
 .most-popular-title h4 a{

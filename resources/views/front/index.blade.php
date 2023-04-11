@@ -113,206 +113,37 @@
             <div class="swiper-most-popular mt-3">
                 <!-- Additional required wrapper -->
                 <div class="swiper-wrapper">
-                    <!-- Slides -->
-                    <div class="swiper-slide">
-                        <a href="#">
-                            <img src="https://via.placeholder.com/600x400" class="img-fluid">
-                        </a>
+                    @foreach($mostPopularArticles as $article)
+                        <div class="swiper-slide">
 
-                        <div class="most-popular-body mt-2">
-                            <div class="most-popular-author d-flex justify-content-between">
-                                <div>
-                                    Yazar: <a href="#">Sercan Özen</a>
+                            <a href="#">
+                                <img src="{{ imageExist($article->image, $settings->article_default_image) }}" class="img-fluid">
+                            </a>
+
+                            <div class="most-popular-body mt-2">
+                                <div class="most-popular-author d-flex justify-content-between">
+                                    <div>
+                                        Yazar: <a href="{{ route("front.authorArticles",["user" => $article->user->username])}}">{{ $article->user->name }}</a>
+                                    </div>
+                                    <div class="text-end">Kategori:
+                                        <a href="{{ route("front.categoryArticles", ['category' => $article->category->slug]) }}">
+                                            {{ $article->category->name }}
+                                        </a>
+                                    </div>
                                 </div>
-                                <div class="text-end">Kategori: <a href="#">Css</a></div>
-                            </div>
-                            <div class="most-popular-title">
-                                <h4 class="text-black">
-                                    <a href="#">
-                                        Lorem ipsum dolor sit amet, consectetur...
-                                    </a>
-                                </h4>
-                            </div>
-                            <div class="most-popular-date">
-                                <span>18 Mart 2023</span> &#x25CF; <span>10 dk</span>
+                                <div class="most-popular-title">
+                                    <h4 class="text-black">
+                                        <a href="{{ route("front.articleDetail",["user" => $article->user->username, "article" => $article->slug]) }}">
+                                            {{ $article->title }}
+                                        </a>
+                                    </h4>
+                                </div>
+                                <div class="most-popular-date">
+                                    <span> {{ $article->format_publish_date }}</span> &#x25CF; <span>10 dk</span>
+                                </div>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="swiper-slide">
-                        <a href="#">
-                            <img src="https://via.placeholder.com/600x400" class="img-fluid">
-                        </a>
-
-                        <div class="most-popular-body mt-2">
-                            <div class="most-popular-author d-flex justify-content-between">
-                                <div>
-                                    Yazar: <a href="#">Sercan Özen</a>
-                                </div>
-                                <div class="text-end">Kategori: <a href="#">Css</a></div>
-                            </div>
-                            <div class="most-popular-title">
-                                <h4 class="text-black">
-                                    <a href="#">
-                                        Lorem ipsum dolor sit amet, consectetur...
-                                    </a>
-                                </h4>
-                            </div>
-                            <div class="most-popular-date">
-                                <span>18 Mart 2023</span> &#x25CF; <span>10 dk</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="swiper-slide">
-                        <a href="#">
-                            <img src="https://via.placeholder.com/600x400" class="img-fluid">
-                        </a>
-
-                        <div class="most-popular-body mt-2">
-                            <div class="most-popular-author d-flex justify-content-between">
-                                <div>
-                                    Yazar: <a href="#">Sercan Özen</a>
-                                </div>
-                                <div class="text-end">Kategori: <a href="#">Css</a></div>
-                            </div>
-                            <div class="most-popular-title">
-                                <h4 class="text-black">
-                                    <a href="#">
-                                        Lorem ipsum dolor sit amet, consectetur...
-                                    </a>
-                                </h4>
-                            </div>
-                            <div class="most-popular-date">
-                                <span>18 Mart 2023</span> &#x25CF; <span>10 dk</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="swiper-slide">
-                        <a href="#">
-                            <img src="https://via.placeholder.com/600x400" class="img-fluid">
-                        </a>
-
-                        <div class="most-popular-body mt-2">
-                            <div class="most-popular-author d-flex justify-content-between">
-                                <div>
-                                    Yazar: <a href="#">Sercan Özen</a>
-                                </div>
-                                <div class="text-end">Kategori: <a href="#">Css</a></div>
-                            </div>
-                            <div class="most-popular-title">
-                                <h4 class="text-black">
-                                    <a href="#">
-                                        Lorem ipsum dolor sit amet, consectetur...
-                                    </a>
-                                </h4>
-                            </div>
-                            <div class="most-popular-date">
-                                <span>18 Mart 2023</span> &#x25CF; <span>10 dk</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="swiper-slide">
-                        <a href="#">
-                            <img src="https://via.placeholder.com/600x400" class="img-fluid">
-                        </a>
-
-                        <div class="most-popular-body mt-2">
-                            <div class="most-popular-author d-flex justify-content-between">
-                                <div>
-                                    Yazar: <a href="#">Sercan Özen</a>
-                                </div>
-                                <div class="text-end">Kategori: <a href="#">Css</a></div>
-                            </div>
-                            <div class="most-popular-title">
-                                <h4 class="text-black">
-                                    <a href="#">
-                                        Lorem ipsum dolor sit amet, consectetur...
-                                    </a>
-                                </h4>
-                            </div>
-                            <div class="most-popular-date">
-                                <span>18 Mart 2023</span> &#x25CF; <span>10 dk</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="swiper-slide">
-                        <a href="#">
-                            <img src="https://via.placeholder.com/600x400" class="img-fluid">
-                        </a>
-
-                        <div class="most-popular-body mt-2">
-                            <div class="most-popular-author d-flex justify-content-between">
-                                <div>
-                                    Yazar: <a href="#">Sercan Özen</a>
-                                </div>
-                                <div class="text-end">Kategori: <a href="#">Css</a></div>
-                            </div>
-                            <div class="most-popular-title">
-                                <h4 class="text-black">
-                                    <a href="#">
-                                        Lorem ipsum dolor sit amet, consectetur...
-                                    </a>
-                                </h4>
-                            </div>
-                            <div class="most-popular-date">
-                                <span>18 Mart 2023</span> &#x25CF; <span>10 dk</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="swiper-slide">
-                        <a href="#">
-                            <img src="https://via.placeholder.com/600x400" class="img-fluid">
-                        </a>
-
-                        <div class="most-popular-body mt-2">
-                            <div class="most-popular-author d-flex justify-content-between">
-                                <div>
-                                    Yazar: <a href="#">Sercan Özen</a>
-                                </div>
-                                <div class="text-end">Kategori: <a href="#">Css</a></div>
-                            </div>
-                            <div class="most-popular-title">
-                                <h4 class="text-black">
-                                    <a href="#">
-                                        Lorem ipsum dolor sit amet, consectetur...
-                                    </a>
-                                </h4>
-                            </div>
-                            <div class="most-popular-date">
-                                <span>18 Mart 2023</span> &#x25CF; <span>10 dk</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="swiper-slide">
-                        <a href="#">
-                            <img src="https://via.placeholder.com/600x400" class="img-fluid">
-                        </a>
-
-                        <div class="most-popular-body mt-2">
-                            <div class="most-popular-author d-flex justify-content-between">
-                                <div>
-                                    Yazar: <a href="#">Sercan Özen</a>
-                                </div>
-                                <div class="text-end">Kategori: <a href="#">Css</a></div>
-                            </div>
-                            <div class="most-popular-title">
-                                <h4 class="text-black">
-                                    <a href="#">
-                                        Lorem ipsum dolor sit amet, consectetur...
-                                    </a>
-                                </h4>
-                            </div>
-                            <div class="most-popular-date">
-                                <span>18 Mart 2023</span> &#x25CF; <span>10 dk</span>
-                            </div>
-                        </div>
-                    </div>
+                    @endforeach
 
 
                 </div>
@@ -343,150 +174,35 @@
         <div class="popular-title col-md-12">
             <h2 class="font-montserrat fw-semibold">Son Makaleler</h2>
         </div>
-
-        <div class="col-md-4 mt-4">
-            <a href="#">
-                <img src="https://via.placeholder.com/600x400" class="img-fluid">
-            </a>
-            <div class="most-popular-body mt-2">
-                <div class="most-popular-author d-flex justify-content-between">
-                    <div>
-                        Yazar: <a href="#">Sercan Özen</a>
+                    @foreach($lastPublishedArticles as $article)
+            <div class="col-md-4 mt-4">
+                <a href="#">
+                    <img src="{{ imageExist($article->image, $settings->article_default_image) }}" class="img-fluid">
+                </a>
+                <div class="most-popular-body mt-2">
+                    <div class="most-popular-author d-flex justify-content-between">
+                        <div>
+                            Yazar: <a href="{{ route("front.authorArticles",["user" => $article->user->username])}}">{{ $article->user->name }}</a>
+                        </div>
+                        <div class="text-end">Kategori: <a href="{{ route("front.categoryArticles", ['category' => $article->category->slug]) }}">
+                                {{ $article->category->name }}
+                            </a>
+                        </div>
                     </div>
-                    <div class="text-end">Kategori: <a href="#">Css</a></div>
-                </div>
-                <div class="most-popular-title">
-                    <h4 class="text-black">
-                        <a href="#">
-                            Lorem ipsum dolor sit amet, consectetur...
-                        </a>
-                    </h4>
-                </div>
-                <div class="most-popular-date">
-                    <span>18 Mart 2023</span> &#x25CF; <span>10 dk</span>
+                    <div class="most-popular-title">
+                        <h4 class="text-black">
+                            <a href="{{ route("front.articleDetail",["user" => $article->user->username, "article" => $article->slug]) }}">
+                                {{ $article->title }}
+                            </a>
+                        </h4>
+                    </div>
+                    <div class="most-popular-date">
+                        <span> {{ $article->format_publish_date }}</span> &#x25CF; <span>10 dk</span>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="col-md-4 mt-4">
-            <a href="#">
-                <img src="https://via.placeholder.com/600x400" class="img-fluid">
-            </a>
-            <div class="most-popular-body mt-2">
-                <div class="most-popular-author d-flex justify-content-between">
-                    <div>
-                        Yazar: <a href="#">Sercan Özen</a>
-                    </div>
-                    <div class="text-end">Kategori: <a href="#">Css</a></div>
-                </div>
-                <div class="most-popular-title">
-                    <h4 class="text-black">
-                        <a href="#">
-                            Lorem ipsum dolor sit amet, consectetur...
-                        </a>
-                    </h4>
-                </div>
-                <div class="most-popular-date">
-                    <span>18 Mart 2023</span> &#x25CF; <span>10 dk</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-4 mt-4">
-            <a href="#">
-                <img src="https://via.placeholder.com/600x400" class="img-fluid">
-            </a>
-            <div class="most-popular-body mt-2">
-                <div class="most-popular-author d-flex justify-content-between">
-                    <div>
-                        Yazar: <a href="#">Sercan Özen</a>
-                    </div>
-                    <div class="text-end">Kategori: <a href="#">Css</a></div>
-                </div>
-                <div class="most-popular-title">
-                    <h4 class="text-black">
-                        <a href="#">
-                            Lorem ipsum dolor sit amet, consectetur...
-                        </a>
-                    </h4>
-                </div>
-                <div class="most-popular-date">
-                    <span>18 Mart 2023</span> &#x25CF; <span>10 dk</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-4 mt-4">
-            <a href="#">
-                <img src="https://via.placeholder.com/600x400" class="img-fluid">
-            </a>
-            <div class="most-popular-body mt-2">
-                <div class="most-popular-author d-flex justify-content-between">
-                    <div>
-                        Yazar: <a href="#">Sercan Özen</a>
-                    </div>
-                    <div class="text-end">Kategori: <a href="#">Css</a></div>
-                </div>
-                <div class="most-popular-title">
-                    <h4 class="text-black">
-                        <a href="#">
-                            Lorem ipsum dolor sit amet, consectetur...
-                        </a>
-                    </h4>
-                </div>
-                <div class="most-popular-date">
-                    <span>18 Mart 2023</span> &#x25CF; <span>10 dk</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-4 mt-4">
-            <a href="#">
-                <img src="https://via.placeholder.com/600x400" class="img-fluid">
-            </a>
-            <div class="most-popular-body mt-2">
-                <div class="most-popular-author d-flex justify-content-between">
-                    <div>
-                        Yazar: <a href="#">Sercan Özen</a>
-                    </div>
-                    <div class="text-end">Kategori: <a href="#">Css</a></div>
-                </div>
-                <div class="most-popular-title">
-                    <h4 class="text-black">
-                        <a href="#">
-                            Lorem ipsum dolor sit amet, consectetur...
-                        </a>
-                    </h4>
-                </div>
-                <div class="most-popular-date">
-                    <span>18 Mart 2023</span> &#x25CF; <span>10 dk</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-4 mt-4">
-            <a href="#">
-                <img src="https://via.placeholder.com/600x400" class="img-fluid">
-            </a>
-            <div class="most-popular-body mt-2">
-                <div class="most-popular-author d-flex justify-content-between">
-                    <div>
-                        Yazar: <a href="#">Sercan Özen</a>
-                    </div>
-                    <div class="text-end">Kategori: <a href="#">Css</a></div>
-                </div>
-                <div class="most-popular-title">
-                    <h4 class="text-black">
-                        <a href="#">
-                            Lorem ipsum dolor sit amet, consectetur...
-                        </a>
-                    </h4>
-                </div>
-                <div class="most-popular-date">
-                    <span>18 Mart 2023</span> &#x25CF; <span>10 dk</span>
-                </div>
-            </div>
-        </div>
+        @endforeach
 
     </section>
 @endsection

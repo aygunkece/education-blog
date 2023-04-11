@@ -26,6 +26,10 @@ Route::prefix("admin")->middleware("auth")->group(function () {
             \UniSharp\LaravelFilemanager\Lfm::routes();
         });
 
+        Route::get('logs', [\Rap2hpoutre\LaravelLogViewer\LogViewerController::class, 'index']);
+
+
+
         Route::get('/', function () {
             return view('admin.index');
         })->name('admin.index');
@@ -86,8 +90,8 @@ Route::group(['prefix' => 'laravel-filemanager', 'middleware' => ['web', 'auth']
 Route::get('/', [FrontController::class,"home"])->name('home');
 Route::get("makaleler", [FrontController::class, "articleList"])->name("front.articleList");
 
-Route::get("/kategoriler/{category:slug}", [FrontController::class, "category"])->name("front.category");
-Route::get('{user:username}/{article:slug}',[FrontController::class,"articleDetail"])->name("front.articleDetail");
+Route::get("/kategoriler/{category:slug}", [FrontController::class, "category"])->name("front.categoryArticles");
+Route::get('/@{user:username}/{article:slug}',[FrontController::class,"articleDetail"])->name("front.articleDetail")->middleware('visitedArticle');
 
 Route::get("/yazarlar/{user:username}", [FrontController::class, "authorArticles"])->name("front.authorArticles");
 Route::post("/{article:id}/makale-yorum", [FrontController::class, "articleComment"])->name("article.comment");
@@ -112,7 +116,7 @@ Route::get("/parola-sifirla/{token}", [LoginController::class, "showPasswordRese
 Route::post("/parola-sifirla/{token}", [LoginController::class, "passwordReset"]);
 
 Route::get("/auth/verify/{token}", [LoginController::class, "verify"])->name("verify-token");
-Route::get("/auth/{driver}/callback", [LoginController::class, "socialVerify"])->name("x");
+Route::get("/auth/{driver}/callback", [LoginController::class, "socialVerify"])->name("socialVerify");
 Route::get("/auth/{driver}", [LoginController::class, "socialLogin"])->name("socialLogin");
 
 

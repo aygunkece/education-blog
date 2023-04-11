@@ -8,26 +8,7 @@
             <div class="article-wrapper">
                 <div class="article-header font-lato d-flex justify-content-between pb-4">
                     <div class="article-header-date">
-
-                        @if($article)
-                            <time datetime="{{ $article->format_publish_date }} "> {{ $article->format_publish_date }}
-                                @php
-                                    $tags = $article->getAttribute("tagsToArray");
-                                @endphp
-                                @if(!is_null($tags) && count($tags))
-                                    @foreach($article->getAttribute("tagsToArray") as $tag)
-                                        @php
-                                            $class = ["text-danger", "text-warning", "text-primary", "text-success"];
-                                            $randomClass = $class[random_int(0,3)];
-                                        @endphp
-                                        <a href="{{ route('front.search', ['q' => $tag]) }}">
-                                            <span class="{{ $randomClass }}">{{ $tag }}</span>
-                                        </a>
-                            @endforeach
-                        @endif
-                        @endif
-
-                       {{-- <time datetime="{{ $article->format_publish_date }} "> {{ $article->format_publish_date }}
+                        <time datetime="{{ $article->format_publish_date }} "> {{ $article->format_publish_date }}
                             @php
                                 $tags = $article->getAttribute("tagsToArray");
                             @endphp
@@ -41,11 +22,14 @@
                                         <span class="{{ $randomClass }}">{{ $tag }}</span>
                                     </a>
                         @endforeach
-                        @endif--}}
+                        @endif
                     </div>
                     <div class="article-header-author">
-                        Yazar: <a href="#"><strong>{{ $article->user->name}}</strong></a>
+                        Yazar: <a href="{{ route('front.authorArticles',['user'=>$article->user->username, 'article'=>$article->slug]) }}"><strong>{{ $article->user->name}}</strong></a><br>
+                        Kategori: <a href="{{ route('front.categoryArticles', ['category'=>$article->category->slug]) }}"><strong>{{ $article->category->name}}</strong></a>
+
                     </div>
+
 
                 </div>
                 <div class="article-content mt-4">
@@ -53,7 +37,8 @@
                         {{ $article->title }}
                     </h1>
                     <div class="d-flex justify-content-center">
-                        <img src="{{asset($article->image)}}" class="img-fluid w-75 rounded-1">
+
+                        <img src="{{ imageExist($article->image, $settings->article_default_image) }}" class="img-fluid w-75 rounded-1">
                     </div>
                     <div class="text-secondary mt-5">
                         {!!  $article->body !!}
@@ -85,13 +70,63 @@
 
             <div class="article-authors mt-5">
                 <div class="bg-white p-4 d-flex justify-content-between align-items-center shadow-sm">
-                    <img src="{{ asset($article->user->image) }}" alt="" width="75" height="75">
+
+                    <img src="{{ imageExist($article->user->image, $settings->default_comment_profile_image) }}" alt="" width="75" height="75">
                     <div class="px-5 me-auto">
                         <h4 class="mt-3"><a href="">{{ $article->user->name }}</a></h4>
                         {!! $article->user->about !!}
                     </div>
                 </div>
             </div>
+            @if(isset($suggestArticles) && count($suggestArticles))
+                <div class="mt-5">
+                    <div class="swiper-most-popular mt-3">
+                        <div class="swiper-wrapper">
+                            @foreach($suggestArticles as $suggestArticle)
+                                <div class="swiper-slide">
+                                    <a href="{{ route('front.articleDetail',[
+                                                  'user'=>$suggestArticle->user->username,
+                                              'article'=>$suggestArticle->slug
+                                              ]) }}">
+                                        <img src="{{ imageExist($suggestArticle->image, $settings->article_default_image) }}" class="img-fluid">
+                                    </a>
+
+                                    <div class="most-popular-body mt-2">
+                                        <div class="most-popular-author d-flex justify-content-between">
+                                            <div>
+                                                Yazar: <a
+                                                    href="{{ route('front.authorArticles',['user'=>$suggestArticle->user->username]) }}">{{ $article->user->name }}</a>
+                                            </div>
+                                            <div class="text-end">Kategori:
+                                                <a
+                                                    href="{{ route('front.categoryArticles',['category'=>$suggestArticle->category->slug]) }}">
+                                                    {{ $suggestArticle->category->name }}
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div class="most-popular-title">
+                                            <h4 class="text-black">
+                                                <a href="{{route('front.articleDetail',[
+                                                  'user'=>$suggestArticle->user,
+                                              'article'=>$suggestArticle->slug
+                                              ]) }}">
+                                                    {{ $suggestArticle->title }}
+                                                </a>
+                                            </h4>
+                                        </div>
+                                        <div class="most-popular-date">
+                                            <span>{{ $suggestArticle->format_publish_date }}</span> &#x25CF; <span>10 dk</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+
+                        </div>
+                    </div>
+                </div>
+
+            @endif
+
 
         </section>
 
@@ -138,36 +173,28 @@
                                 @php
                                     if ($comment->user)
                                     {
-                                        $image = $comment->user->image;
                                         $name = $comment->user->name;
-
-                                        if (!file_exists(public_path($image )))
-                                            {
-                                                $image = $settings->default_comment_profile_image;
-                                            }
                                     }
                                     else
                                     {
-                                        $image = $settings->default_comment_profile_image;
                                         $name = $comment ->name;
                                     }
                                 @endphp
-                                <img src="{{ asset($image) }}" alt="" width="75" height="75">
+                                <img src="{{ imageExist($comment->user?->image, $settings->default_comment_profile_image) }}" alt="" width="75" height="75">
                             </div>
                             <div class="col-md-10">
                                 <div class="px-3">
                                     <div class="comment-title-date d-flex justify-content-between">
-                                        <h4 class="mt-3"><a href="">{{ $name }}</a></h4>
-                                        <time
-                                            datetime="{{ \Carbon\Carbon::parse($comment->created_at)->format("d-m-Y ") }}">
-                                            {{ \Carbon\Carbon::parse($comment->created_at)->format("d-m-Y ") }}
+                                        <h4 class="mt-3"><a href="">{{ $comment->user->name }}</a></h4>
+                                        <time datetime="{{ $comment->format_created_at }}">
+                                            {{ $comment->format_created_at }}
                                         </time>
                                     </div>
                                     <p class="text-secondary">{{ $comment->comment }}</p>
                                     <div class="d-flex align-items-center justify-content-between ">
                                         <div>
                                             <a href="javascript:void(0)" class="btn-response btnArticleResponseComment"
-                                               data-id="{{ $comment->id   }}">Cevap Ver</a>
+                                               data-id="{{ $comment->id }}">Cevap Ver</a>
                                         </div>
                                         <div class="d-flex  align-items-center">
                                             @php
@@ -181,7 +208,8 @@
                                                 @endif
                                             >
                                                 <span class="material-icons">thumb_up</span></a>
-                                            <span id="commentLikeCount-{{ $comment->id }}">{{ $comment->like_count }}</span>
+                                            <span
+                                                id="commentLikeCount-{{ $comment->id }}">{{ $comment->like_count }}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -196,15 +224,9 @@
                                        {
                                              $childImage = $child->user->image;
                                            $childName = $child->user->name;
-                                           if (!file_exists(public_path($childImage)))
-                                               {
-                                                   $childImage = $settings->default_comment_profile_image;
-
-                                               }
                                        }
                                        else
                                        {
-                                           $childImage = $settings->default_comment_profile_image;
                                            $childName = $child->name;
                                        }
                                     @endphp
@@ -212,16 +234,15 @@
                                         class="article-comment bg-white p-2 mt-3 d-flex justify-content-between align-items-center shadow-sm">
                                         <div class="col-md-2">
                                             <img
-                                                src="{{ asset($childImage) }}"
+                                                src="{{ imageExist($child->user->image, $settings->default_comment_profile_image) }}"
                                                 alt="" width="75" height="75">
                                         </div>
                                         <div class="col-md-10">
                                             <div class="px-3">
                                                 <div class="comment-title-date d-flex justify-content-between">
                                                     <h4 class="mt-3"><a href="">{{ $childName }}</a></h4>
-                                                    <time
-                                                        datetime="{{ \Carbon\Carbon::parse($child->created_at)->format("d-m-Y") }}">
-                                                        {{ \Carbon\Carbon::parse($child->created_at)->format("d-m-Y") }}
+                                                    <time datetime="{{ $child->format_created_at }}">
+                                                        {{ $child->format_created_at }}
                                                     </time>
                                                 </div>
                                                 <p class="text-secondary">{{ $child->comment }}</p>
@@ -239,7 +260,8 @@
                                                         >
                                                             <span class="material-icons">thumb_up</span>
                                                         </a>
-                                                        <span id="commentLikeCount-{{ $child->id }}">{{ $child->like_count }}</span>
+                                                        <span
+                                                            id="commentLikeCount-{{ $child->id }}">{{ $child->like_count }}</span>
                                                     </div>
                                                 </div>
                                             </div>

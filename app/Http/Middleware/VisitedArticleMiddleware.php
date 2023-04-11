@@ -2,12 +2,17 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Article;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class VisitedArticleMiddleware
 {
+    public function __construct(public Article $article)
+    {
+
+    }
     /**
      * Handle an incoming request.
      *
@@ -36,10 +41,10 @@ class VisitedArticleMiddleware
             ->where("slug", $request->article)
             ->first();
 
-      /*  $visitedArticles = session()->get("visited_articles", []);
+        $visitedArticles = session()->get("visited_articles", []);
         $visitedArticles[] = $article->id;
         session()->put('visited_articles', $visitedArticles);
-        session()->put('last_article', $article);*/
+        session()->put('last_article', $article);
 
         return $next($request);
     }
