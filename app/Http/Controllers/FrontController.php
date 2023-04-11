@@ -9,6 +9,7 @@ use App\Models\Settings;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\View;
 
 class FrontController extends Controller
@@ -21,6 +22,7 @@ class FrontController extends Controller
 
     public function home()
     {
+        //Log::debug("test");
         $mostPopularArticles = Article::query()
             ->with("user","category")
             ->whereHas("user")

@@ -27,6 +27,7 @@ Route::prefix("admin")->middleware("auth")->group(function () {
         });
 
         Route::get('logs', [\Rap2hpoutre\LaravelLogViewer\LogViewerController::class, 'index']);
+        Route::get('logs2', [\Arcanedev\LogViewer\Http\Controllers\LogViewerController::class, 'index']);
 
 
 
