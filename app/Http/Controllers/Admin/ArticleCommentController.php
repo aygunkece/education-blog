@@ -14,7 +14,7 @@ class ArticleCommentController extends Controller
     {
         $users = User::all();
 
-        $comments = ArticleComment::query()
+        $comments  = ArticleComment::query()
             ->with(['user', "article", "children", "article.user"])
             ->approveStatus()
             ->user($request->user_id)
@@ -31,7 +31,7 @@ class ArticleCommentController extends Controller
     {
         $users = User::all();
 
-        $comments = ArticleComment::query()
+        $comments  = ArticleComment::query()
             ->withTrashed()
             ->with(['user', "article", "children", "article.user"])
             ->status($request->status)
@@ -48,9 +48,16 @@ class ArticleCommentController extends Controller
     public function changeStatus(Request $request)
     {
         $comment = ArticleComment::findOrFail($request->id);
-
-        $comment->status = $comment->status ? 0 : 1;
-
+        $page = $request->page;
+        if ($page=="approval")
+        {
+            $comment->approve_status=1;
+        }
+        else
+        {
+            $comment->status = $comment->status ? 0 : 1;
+        }
+        $this->updateLog($comment,ArticleComment::class);
         $comment->save();
 
 

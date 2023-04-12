@@ -87,4 +87,5 @@ class Article extends Model
             $query->where("publish_date", $publish_date);
         }
     }
+
 }

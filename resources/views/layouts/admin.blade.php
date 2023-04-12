@@ -34,6 +34,7 @@
     <link rel="icon" type="image/png" sizes="32x32" href="{{ asset( 'assets/images/neptune.png') }}" />
     <link rel="icon" type="image/png" sizes="16x16" href="{{ asset( 'assets/images/neptune.png') }}" />
     @yield('css')
+    @stack("style")
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -70,6 +71,7 @@
 <script src="{{ asset('assets/js/main.min.js') }}"></script>
 <script src="{{ asset('assets/js/custom.js') }}"></script>
 <script src="{{ asset('assets/js/pages/dashboard.js') }}"></script>
+<script src="{{ asset('assets/front/js/main.js') }}"></script>
 <script>
     $(document).ready(function () {
         $.ajaxSetup({
@@ -81,5 +83,6 @@
 </script>
 @include('sweetalert::alert')
 @yield('js')
+@stack("javascript")
 </body>
 </html>

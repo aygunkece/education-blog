@@ -5,19 +5,25 @@ namespace App\Http\Controllers\Auth;
 use App\Events\UserRegistered;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
+use App\Http\Requests\PasswordResetRequest;
 use App\Http\Requests\UserStoreRequest;
+use App\Mail\ResetPasswordMail;
+use App\Models\Log;
 use App\Models\User;
 use App\Models\UserVerify;
+use App\Traits\Loggable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Laravel\Socialite\Facades\Socialite;
 use \Illuminate\Support\Str;
+use \Illuminate\Support\Facades\DB;
 
 
 class LoginController extends Controller
 {
+    use Loggable;
     public function showLogin()
     {
         return view("auth.login");
@@ -33,6 +39,26 @@ class LoginController extends Controller
         return view("front.auth.register");
     }
 
+    public function showPasswordReset()
+    {
+        return view("front.auth.reset-password");
+    }
+
+    public function showPasswordResetConfirm(Request $request)
+    {
+        $token = $request->token;
+
+        $tokenExist = DB::table('password_reset_tokens')->where('token',$token)->first();
+
+        if (!$tokenExist)
+        {
+            abort(404);
+        }
+        return view("front.auth.reset-password", compact("token"));
+
+    }
+
+
     public function login(LoginRequest $request)
     {
 
@@ -47,6 +73,9 @@ class LoginController extends Controller
         if ($user && Hash::check($password, $user->password)) {
 
             Auth::login($user, $remember);
+
+             $this->log("login", $user->id, $user->toArray(), User::class);
+
             $userIsAdmin = Auth::user()->is_admin;
 
             if (!$userIsAdmin)
@@ -65,11 +94,12 @@ class LoginController extends Controller
         }
     }
 
-
     public function logout(Request $request)
     {
         if (Auth::check()) {
             $isAdmin = Auth::user()->is_admin;
+            $this->log("logout", auth()->id(), auth()->user()->toArray(), User::class);
+
             Auth::logout();
             $request->session()->invalidate();
             $request->session()->regenerateToken();
@@ -95,16 +125,6 @@ class LoginController extends Controller
 
         event(new UserRegistered($user));
 
-        /*$token = \Illuminate\Support\Str::random("60");
-        UserVerify::create([
-            "user_id" => $user->id,
-            "token" => $token
-        ]);
-        Mail::send("email.verify", compact("token"), function ($mail) use ($user) {
-            $mail->to($user->email);
-            $mail->subject("Doğrulama Emaili");
-        });*/
-
         alert()
             ->success('Başarılı', "Mailinizi onaylamanız için onay maili gönderilmiştir. Lütfen mail kutunuzu kontrol ediniz.")
             ->showConfirmButton('Tamam', '#3085d6')
@@ -123,7 +143,7 @@ class LoginController extends Controller
                 $user->email_verified_at = now();
                 $user->status = 1;
                 $user->save();
-                //$this->log("verify user", $user->id, $user->toArray(), User::class);
+                $this->log("verify user", $user->id, $user->toArray(), User::class);
 
                 $verifyQuery->delete();
                 $message = "Emailiniz doğrulandı.";
@@ -179,4 +199,72 @@ class LoginController extends Controller
     {
         return User::query()->where("username", $username)->first();
     }
+
+    public function sendPasswordReset(Request $request)
+    {
+        $email = $request->email;
+        $find = User::query()->where("email",$email)->firstOrFail();
+
+
+
+        $tokenFind = DB::table('password_reset_tokens')->where('email', $email)->first();
+        if ($tokenFind)
+        {
+            $token =$tokenFind->token;
+
+        }
+        else
+        {
+            $token = Str::random(60);
+            DB::table("password_reset_tokens")->insert([
+                'email' => $email,
+                'token' => $token,
+                'created_at' => now()
+            ]);
+        }
+
+        if ($tokenFind && now()->diffInHours($tokenFind->created_at) < 5)
+        {
+            alert()
+                ->info('Başarılı', "Daha önce sıfırlama maili gönderilmiştir. Daha sonra tekrar deneyiniz.")
+                ->showConfirmButton('Tamam', '#3085d6')
+                ->autoClose(5000);
+            return redirect()->back();
+        }
+
+
+
+        Mail::to($find->email)->send(new ResetPasswordMail($find, $token));
+        $this->log("password reset mail send", $find->id, $find->toArray(), User::class);
+
+        alert()
+            ->success('Başarılı', "Parola sıfırlama maili gönderilmiştir.")
+            ->showConfirmButton('Tamam', '#3085d6')
+            ->autoClose(5000);
+        return redirect()->back();
+
+    }
+
+    public function passwordReset(PasswordResetRequest $request)
+    {
+        $tokenQuery = DB::table("password_reset_tokens")->where('token', $request->token);
+        $tokenExist = $tokenQuery->first();
+        if (!$tokenExist)
+            abort(404);
+
+        //$userExist = DB::table("users")->where("email", $tokenExist->email)->first();
+        $userExist = User::query()->where("email", $tokenExist->email)->first();
+        if (!$tokenExist)
+            abort(400,'Lütfen yönetici ile iletişime geçiniz.');
+
+        $userExist->update(['password' => Hash::make($request->password)]);
+        $tokenQuery->delete();
+
+        alert()
+            ->success('Başarılı', "Parolanız sıfırlanmıştır. Giriş yapabilirsiniz.")
+            ->showConfirmButton('Tamam', '#3085d6')
+            ->autoClose(5000);
+        return redirect()->route('user.login');
+    }
 }
+

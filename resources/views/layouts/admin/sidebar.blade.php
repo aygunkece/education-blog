@@ -76,8 +76,15 @@
 
             <li class="{{ Route::is("settings") ? "open" : "" }}">
                 <a href="{{ route("settings") }}" class="">
-                    <i class="material-icons">settings</i>
+                    <i class="material-icons-two-tone">settings</i>
                     Ayarlar
+                </a>
+            </li>
+
+            <li class="{{ Route::is("dbLogs") ? "open" : "" }}">
+                <a href="{{ route("dbLogs") }}" class="">
+                    <i class="material-icons-two-tone">settings</i>
+                    Log Yönetimi
                 </a>
             </li>
         </ul>
